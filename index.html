@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Custom sortable</title>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<script type="text/javascript" src="script.js"></script>
+</head>
+<body>
+	<div class="container">
+		<ul id="sortableList">
+			<li><div>First row</div></li>
+			<li>Second row</li>
+			<li><span>Third row</span></li>
+		</ul>
+	</div>
+	<script type="text/javascript">
+		let sort = sortable("#sortableList").init();
+		console.log(sort);
+	</script>
+</body>
+</html>
