@@ -6,33 +6,36 @@
 		pressedElement: null,
 		clonedElement: null,
 		clonedElementContainer: null,
-		mousePosition: { x:0, y:0 }
+		mousePosition: { x:0, y:0 },
+		sortableElements: [],
+		containerElement: null,
 	};
 
 	function init(){
-		let container = document.querySelector(this.selector);
+		this.containerElement = document.querySelector(this.selector);
 
 		this.clonedElementContainer = document.body.appendChild(document.createElement("div"));
 		this.clonedElementContainer.setAttribute("style", "position:fixed;");
 
-		let sortableElements = (Array.from(container.childNodes)).filter((element) => { return element.nodeType == element.ELEMENT_NODE });
+		this.sortableElements = (Array.from(this.containerElement.childNodes)).filter((element) => { return element.nodeType == element.ELEMENT_NODE });
 
-		addMouseDownEvents.call(this, sortableElements);
+		addMouseDownEvents.call(this);
 
 		document.addEventListener("mousemove", (event) => {
 			this.mousePosition = { x: event.pageX, y: event.pageY };
 		})
 
-		setInterval(updateElementLocation.bind(this), 10);
+		setInterval(updateElementLocation.bind(this), 20);
 
 		return this;
 	}
 
 	function updateElementLocation(){
 		if(this.pressedElement) {
-			console.log(this.mousePosition.x, this.mousePosition.y);
+			this.pressedElement.style.visibility = "hidden";
 			this.clonedElementContainer.style.top = this.mousePosition.y + "px";
 			this.clonedElementContainer.style.left = this.mousePosition.x + "px";
+			reorderElements.call(this);
 		}
 	}
 
@@ -41,8 +44,8 @@
 		return sortableObj;
 	}
 
-	function addMouseDownEvents(sortableElements){
-		sortableElements.forEach((element) => {
+	function addMouseDownEvents(){
+		this.sortableElements.forEach((element) => {
 			element.addEventListener("mousedown", (event) => {
 				this.pressedElement = element;
 				this.clonedElement = element.cloneNode(true);
@@ -52,7 +55,9 @@
 			})
 		})
 		window.addEventListener("mouseup", (event) => {
+			this.pressedElement.style.visibility = "visible";
 			this.pressedElement = null;
+			removeAllChildren(this.clonedElementContainer);
 		})
 	}
 
@@ -63,5 +68,31 @@
 	  while(element.firstChild){
 	    element.removeChild(element.firstChild);
 	  }
+	}
+
+	function reorderElements(){
+		let newOrder = [];
+		let alreadyPushed = false;
+		this.sortableElements.forEach((element) => {
+			if(element.style.visibility == "hidden") return;
+
+			if(element.getBoundingClientRect().top < this.clonedElement.getBoundingClientRect().top) {
+				newOrder.push(element);
+			} else {
+				if(!alreadyPushed) {
+					newOrder.push((this.sortableElements.filter((element) => { return element.style.visibility == "hidden" }))[0]);
+					alreadyPushed = true;
+				}
+				newOrder.push(element);
+			}
+		});
+		if(!alreadyPushed) {
+			newOrder.push((this.sortableElements.filter((element) => { return element.style.visibility == "hidden" }))[0]);
+		}
+		this.sortableElements = newOrder;
+		removeAllChildren(this.containerElement);
+		this.sortableElements.forEach((element) => {
+			this.containerElement.appendChild(element);
+		});
 	}
 })();
