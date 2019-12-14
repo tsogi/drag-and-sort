@@ -25,7 +25,7 @@
 			this.mousePosition = { x: event.pageX, y: event.pageY };
 		})
 
-		setInterval(updateElementLocation.bind(this), 20);
+		setInterval(updateElementLocation.bind(this), 10);
 
 		return this;
 	}
