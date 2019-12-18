@@ -25,7 +25,7 @@
 			this.mousePosition = { x: event.pageX, y: event.pageY };
 		})
 
-		setInterval(updateElementLocation.bind(this), 10);
+		window.requestAnimationFrame(updateElementLocation.bind(this));
 
 		return this;
 	}
@@ -37,6 +37,7 @@
 			this.clonedElementContainer.style.left = this.mousePosition.x + "px";
 			reorderElements.call(this);
 		}
+		window.requestAnimationFrame(updateElementLocation.bind(this));
 	}
 
 	let sortable = (selector) => {
@@ -61,7 +62,6 @@
 		})
 	}
 
-	window.sortableObj = sortableObj;
 	window.sortable = sortable;
 
 	function removeAllChildren(element){

@@ -11,14 +11,20 @@ ul {
 	border-style: solid;
     border-width: 1px;
     border-color: grey;
-    border-radius: 3px;
     padding: 0px 10px;
 }
 
 ul li {
-	background: #e47676;
+	background: rgb(208, 212, 214);
     cursor: pointer;
     margin: 10px 0px;
-    border-radius: 3px;
+    border-radius: 1px;
     padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+ul li img {
+	height: 13px;
 }
